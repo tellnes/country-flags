@@ -3,6 +3,7 @@ var gm = require('gm')
   , fs = require('fs')
   , path = require('path')
   , debug = require('debug')('flags')
+  , http = require('http')
 
 
 var flags = {}
@@ -82,3 +83,32 @@ exports.middleware = function(options) {
 Object.defineProperty(exports, 'handle', {
   get: exports.middleware
 })
+
+exports.listen = function() {
+  var handle = exports.middleware()
+
+  var server = http.createServer(function(req, res) {
+    handle(req, res, function(err) {
+      if (err) {
+        res.statusCode = 500
+        res.end('500 - Internal error')
+        console.error(err)
+        return
+      }
+
+      res.statusCode = 404
+      res.end('404 - not found')
+    })
+  })
+
+  server.on('listening', function() {
+    var address = server.address()
+    if (address.address == '0.0.0.0') address.address = '127.0.0.1'
+    address = 'http://' + address.address + ':' + address.port
+    console.log('Country flags service is now listening on ' + address)
+  })
+
+  server.listen.apply(server, arguments)
+
+  return server
+}
