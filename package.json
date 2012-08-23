@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "country-flags-server": "bin/server.js"
+    "country-flags-server": "bin/server.js",
+    "country-flags-seaport": "bin/seaport.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "gm": "~1.4.2",
-    "debug": "~0.7.0"
+    "debug": "~0.7.0",
+    "seaport": "~0.8.0"
   },
   "devDependencies": {}
 }
