@@ -32,11 +32,26 @@ var regexp = /^\/([a-z]{2})(\-([0-9]{1,4})(\x([0-9]{1,4}))?)?\.gif$/
 exports.middleware = function(options) {
   options = options || {}
 
-  var cacheControl = options.cacheControl || 'max-age=' + (60*60*24*365) + ', public'
+  var ttl = options.ttl || (60*60*24*365)
+    , cacheControl = options.cacheControl || 'max-age=' + ttl + ', public'
     , maxWidth = options.maxWidth || 3000
     , maxHeight = options.maxHeight || 3000
     , minWidth = options.minWidth || 0
     , minHeight = options.minHeight || 0
+    , expiresCache
+
+
+  function getExpires() {
+    if (!expiresCache) {
+      var d = new Date(Date.now() + ttl * 1000)
+      expiresCache = d.toUTCString()
+      setTimeout(function() {
+        expiresCache = null
+      }, 1000 - d.getMilliseconds())
+    }
+    return expiresCache
+  }
+
 
   return function(req, res, next) {
     debug('handle request', req.url)
@@ -60,6 +75,7 @@ exports.middleware = function(options) {
     if (!file) return next()
 
     res.setHeader('Cache-Control', cacheControl)
+    res.setHeader('Expires', getExpires())
     res.setHeader('Content-Type', 'image/gif')
 
     if (!width) {
