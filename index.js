@@ -26,8 +26,12 @@ fs.readFileSync('./countries.txt')
   })
 
 
+flags[''] = 'default'
+files['default'] = path.resolve(__dirname, 'default.gif')
+
 
 var regexp = /^\/([a-z]{2})(\-([0-9]{1,4})(\x([0-9]{1,4}))?)?\.gif$/
+  , defaultRe = /^\/()(\-([0-9]{1,4})(\x([0-9]{1,4}))?)?\.gif$/
 
 exports.middleware = function(options) {
   options = options || {}
@@ -65,7 +69,11 @@ exports.middleware = function(options) {
 
 
     var match = regexp.exec(req.url)
-    if (!match) return next()
+    if (!match) {
+      match = defaultRe.exec(req.url)
+      if (!match) return next()
+    }
+
     var code = match[1]
       , width = parseInt(match[3], 10) || null
       , height = parseInt(match[5], 10) || null
