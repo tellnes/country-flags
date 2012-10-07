@@ -9,13 +9,13 @@ var gm = require('gm')
 var flags = {}
 
 var files = {}
-fs.readdirSync('./flags').forEach(function(file) {
+fs.readdirSync(path.join(__dirname, 'flags')).forEach(function(file) {
   var name = file.slice(0, -4)
-  files[name] = path.resolve(__dirname, 'flags', file)
+  files[name] = path.join(__dirname, 'flags', file)
 })
 
 
-fs.readFileSync('./countries.txt')
+fs.readFileSync(path.join(__dirname, 'countries.txt'))
   .toString()
   .split('\n')
   .forEach(function(line) {
