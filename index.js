@@ -26,12 +26,11 @@ fs.readFileSync('./countries.txt')
   })
 
 
-flags[''] = 'default'
+flags['-'] = 'default'
 files['default'] = path.resolve(__dirname, 'default.gif')
 
 
-var regexp = /^\/([a-z]{2})(\-([0-9]{1,4})(\x([0-9]{1,4}))?)?\.gif$/
-  , defaultRe = /^\/()(\-([0-9]{1,4})(\x([0-9]{1,4}))?)?\.gif$/
+var regexp = /^\/([a-z]{2}|\-(?!\-))?(?:\-(?!\.)([0-9]{2,4})?(?:x([0-9]{2,4}))?)?\.gif$/
 
 exports.middleware = function(options) {
   options = options || {}
@@ -69,14 +68,11 @@ exports.middleware = function(options) {
 
 
     var match = regexp.exec(req.url)
-    if (!match) {
-      match = defaultRe.exec(req.url)
-      if (!match) return next()
-    }
+    if (!match) return next()
 
-    var code = match[1]
-      , width = parseInt(match[3], 10) || null
-      , height = parseInt(match[5], 10) || null
+    var code = match[1] || '-'
+      , width = parseInt(match[2], 10) || null
+      , height = parseInt(match[3], 10) || null
       , file = flags[code]
       , pathname = files[file]
 
@@ -86,7 +82,7 @@ exports.middleware = function(options) {
     res.setHeader('Expires', getExpires())
     res.setHeader('Content-Type', 'image/gif')
 
-    if (!width) {
+    if (!width && !height) {
       fs.createReadStream(pathname).pipe(res)
       return
     }
