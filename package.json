@@ -17,8 +17,8 @@
   "author": "Christian Tellnes <christian@tellnes.no>",
   "license": "MIT",
   "dependencies": {
-    "gm": "~1.4.2",
-    "debug": "~0.7.0"
+    "gm": "~1.8.1",
+    "debug": "~0.7.2"
   },
   "devDependencies": {}
 }
