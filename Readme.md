@@ -1,5 +1,7 @@
 # Country Flags server in Node.JS
 
+[![Dependency Status](https://gemnasium.com/tellnes/country-flags.png)](https://gemnasium.com/tellnes/country-flags)
+
 Serve country flags images.
 
 
